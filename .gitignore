@@ -1,3 +1,7 @@
 *.class
 .idea
 .gradle
+*~
+gradlew*
+gradle/
+build/

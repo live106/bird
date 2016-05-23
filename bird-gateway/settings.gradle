@@ -1,2 +1,5 @@
 rootProject.name = 'bird-gateway'
 
+includeFlat 'bird-io'
+includeFlat 'bird-protocol'
+

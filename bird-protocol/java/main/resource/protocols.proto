@@ -1,0 +1,38 @@
+syntax = "proto3";
+package com.live106.message;
+
+/////////////////////////
+//
+// 对于Union Types 官方文档建议两种方式，权衡考虑后目前采取了第一种，详见 https://developers.google.com/protocol-buffers/docs/techniques#union
+// 注：不确定第二种实现方式对js是否友好
+//
+/////////////////////////
+
+message Protocol {
+    CLogin cLogin = 10;
+    SLogin sLogin = 11;
+    CLogout cLogout = 20;
+    SLogout sLogout = 21;
+}
+
+message CLogin {
+    enum Types {
+        NORMAL = 0;
+        MID = 10;
+    }
+    string username = 1;
+    string password = 10;
+    string mid = 15;
+}
+
+message CLogout {
+    int64 uid = 1;
+}
+
+message SLogin {
+    int64 uid = 1;
+}
+
+message SLogout {
+    bool result = 1;
+}

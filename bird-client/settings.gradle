@@ -1,0 +1,5 @@
+rootProject.name = 'bird-client'
+
+includeFlat 'bird-io'
+includeFlat 'bird-protocol'
+
