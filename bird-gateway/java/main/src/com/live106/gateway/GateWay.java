@@ -7,7 +7,10 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
+import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketServerCompressionHandler;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
@@ -27,8 +30,13 @@ public final class GateWay {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast("logging", new LoggingHandler(LogLevel.INFO))
-                            .addLast("frameDecoder", new LengthFieldBasedFrameDecoder(4096, 0, 4, 0, 4))
+                            ch.pipeline().addLast("logging", new LoggingHandler(LogLevel.DEBUG))
+                                    .addLast("httpServer", new HttpServerCodec())
+                                    .addLast("httpObject", new HttpObjectAggregator(65536))
+                                    .addLast("websocketCompression", new WebSocketServerCompressionHandler())
+//                            .addLast("frameDecoder", new LengthFieldBasedFrameDecoder(4096, 0, 4, 0, 4))
+                                    .addLast("websocket", new WebSocketServerProtocolHandler("/bird", null, true))
+                                    .addLast("websocketFrame", new WebSocketFrameHandler())
                             .addLast("protobufDecoder", new ProtobufDecoder(Protocols.Protocol.getDefaultInstance()))
                             .addLast("gatewayHandler", new GateWayHandler())
                             ;
